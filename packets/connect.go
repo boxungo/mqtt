@@ -8,14 +8,14 @@ import (
 
 //连接错误码
 const (
-	Accepted                        = 0x00
-	ErrRefusedBadProtocolLevel      = 0x01
-	ErrRefusedIDRejected            = 0x02
-	ErrRefusedServerUnavailable     = 0x03
-	ErrRefusedBadUsernameOrPassword = 0x04
-	ErrRefusedNotAuthorised         = 0x05
-	ErrNetworkError                 = 0xFE
-	ErrProtocolViolation            = 0xFF
+	Accepted                        = 0x00 // 接收成功
+	ErrRefusedBadProtocolLevel      = 0x01 // 协议等级错误
+	ErrRefusedIDRejected            = 0x02 // 客户端ID错误
+	ErrRefusedServerUnavailable     = 0x03 // 服务不可用
+	ErrRefusedBadUsernameOrPassword = 0x04 // 错误的用户名或密码
+	ErrRefusedNotAuthorised         = 0x05 // 未被授权
+	ErrNetworkError                 = 0xFE // 网络错误
+	ErrProtocolViolation            = 0xFF // 协议错误,保留位不为0 或 协议名错误 或 客户端标识|用户名|密码长度超出65535
 )
 
 // ConnectPacket 连接包
@@ -49,9 +49,9 @@ func (p *ConnectPacket) String() string {
 }
 
 // Write 写入
-// Bit     7          6          5          4          3          2          1          0
-//	   User Name   Password   Will Retain     Will QoS         Will Flag   Clean     Reserved
-//	   Flag        Flag                                                    Session
+// Bit     7             6              5          4          3          2            1                0
+//	   UsernameFlag PasswordFlag   Will Retain     Will      QoS     Will Flag   Clean Session     Reserved
+//
 func (p *ConnectPacket) Write(w io.Writer) error {
 	var body bytes.Buffer
 	var err error
